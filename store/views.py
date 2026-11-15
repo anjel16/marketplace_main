@@ -247,7 +247,7 @@ def update_cart_item(request, item_id):
     )
 
     if request.method == 'POST':
-        quantity = int(request.POST.get('quantity'))
+        quantity = int(request.POST.get('quantity',0))
 
         if quantity >
         item.product.stock:
