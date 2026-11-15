@@ -249,22 +249,17 @@ def update_cart_item(request, item_id):
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity',0))
 
-        if quantity > 
-    item.product.stock:
-            messages.error(
-                request,
-                "No hay suficiente stock disponible."
-    )
+    if quantity > item.product.stock:
+        messages.error(request, "No hay suficiente stock disponible.")
+        return redirect('cart_detail')
     
-        elif quantity > 0:
-            item.quantity = quantity
-            item.save()
+    elif quantity > 0:
+        item.quantity = quantity
+        item.save()
+        messages.success(request, "Cantidad actualizada correctamente.")
 
-            messages.success(request, "Cantidad actualizada correctamente.")
-
-        else:
-            item.delete()
-
-            messages.success(request, "Producto eliminado del carrito.")
+    else:
+        item.delete()
+        messages.success(request, "Producto eliminado del carrito.")
 
     return redirect('cart_detail')
