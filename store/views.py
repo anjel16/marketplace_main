@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -77,6 +78,8 @@ def login_view(request):
 
         if user:
             login(request, user)
+            messages.success(request,
+            f"¡Bienvenido, {user.username}!")
             return redirect('home')
 
     return render(request, 'store/login.html')
@@ -84,6 +87,8 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    messages.success(request, "Has
+    cerrado sesion correctamente.")
     return redirect('home')
 
 # =========================
@@ -212,6 +217,9 @@ def add_to_cart(request, product_id):
             messages.error(request, "No hay suficiente stock disponible.")
             return redirect('home')
 
+    messages.success(request, "Producto
+    agregado al carrito
+    correctamente.")
     return redirect('cart_detail')
 
 
