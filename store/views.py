@@ -195,9 +195,22 @@ def add_to_cart(request, product_id):
         product=product
     )
 
+    if cart_item.quantity > product.stock:
+        if created:
+            cart_item.delete()
+
+        from django.contrib import messages
+        messages.error(request, "No hay suficiente stock disponible.")
+        return redirect('home')
+
     if not created:
-        cart_item.quantity += 1
-        cart_item.save()
+        if cart_item.quantity < product.stock:
+            cart_item.quantity += 1
+            cart_item.save()
+        else:
+            from django.contrib import messages
+            messages.error(request, "No hay suficiente stock disponible.")
+            return redirect('home')
 
     return redirect('cart_detail')
 
