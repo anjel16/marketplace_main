@@ -216,9 +216,7 @@ def add_to_cart(request, product_id):
             messages.error(request, "No hay suficiente stock disponible.")
             return redirect('home')
 
-    messages.success(request, "Producto
-    agregado al carrito
-    correctamente.")
+    messages.success(request, "Producto agregado al carrito correctamente.")
     return redirect('cart_detail')
 
 
