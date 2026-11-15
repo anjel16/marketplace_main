@@ -6,7 +6,28 @@
     <h2>Mi Dashboard</h2>
     <a href="{% url 'product_create' %}" class="btn btn-success">+ Nuevo Producto</a>
 </div>
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <h5>Total de productos</h5>
+            <h3>{{ total_products }}</h3>
+        </div>
+    </div>
 
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <h5>Stock disponible</h5>
+            <h3>{{ total_stock }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <h5>Valor del inventario</h5>
+            <h3>$ {{ total_value }}</h3>
+        </div>
+    </div>
+</div>
 <table class="table table-striped">
     <thead>
         <tr>

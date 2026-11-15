@@ -95,9 +95,16 @@ def dashboard(request):
         return HttpResponseForbidden("No tienes permisos")
 
     products = Product.objects.filter(owner=request.user)
+    total_products = products.count()
+    total_stock = sum(product.stock for product in products)
+    total_value = sum(product.price * product.stock for product in products)
 
     return render(request, 'store/dashboard.html', {
-        'products': products
+        'products': products,
+        'total_products':
+        total_products,
+        'total_stock': total_stock,
+        'total_value': total_value
     })
 
 # =========================
