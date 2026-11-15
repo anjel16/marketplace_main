@@ -127,6 +127,7 @@ def product_create(request):
         product.owner = request.user
         product.save()
         form.save_m2m()
+        messages.success(request, "¡Producto publicado correctamente!")
         return redirect('dashboard')
 
     return render(request, 'store/product_form.html', {'form': form})
