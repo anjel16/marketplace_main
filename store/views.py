@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -78,8 +77,6 @@ def login_view(request):
 
         if user:
             login(request, user)
-            messages.success(request,
-            f"¡Bienvenido, {user.username}!")
             return redirect('home')
 
     return render(request, 'store/login.html')
@@ -87,7 +84,6 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    messages.success(request, "Has cerrado sesion correctamente.")
     return redirect('home')
 
 # =========================
@@ -99,16 +95,9 @@ def dashboard(request):
         return HttpResponseForbidden("No tienes permisos")
 
     products = Product.objects.filter(owner=request.user)
-    total_products = products.count()
-    total_stock = sum(product.stock for product in products)
-    total_value = sum(product.price * product.stock for product in products)
 
     return render(request, 'store/dashboard.html', {
-        'products': products,
-        'total_products':
-        total_products,
-        'total_stock': total_stock,
-        'total_value': total_value
+        'products': products
     })
 
 # =========================
@@ -127,7 +116,6 @@ def product_create(request):
         product.owner = request.user
         product.save()
         form.save_m2m()
-        messages.success(request, "¡Producto publicado correctamente!")
         return redirect('dashboard')
 
     return render(request, 'store/product_form.html', {'form': form})
@@ -200,22 +188,10 @@ def add_to_cart(request, product_id):
         product=product
     )
 
-    if cart_item.quantity > product.stock:
-        if created:
-            cart_item.delete()
-
-            messages.error(request, "No hay suficiente stock disponible.")
-            return redirect('home')
-
     if not created:
-        if cart_item.quantity < product.stock:
-            cart_item.quantity += 1
-            cart_item.save()
-        else:
-            messages.error(request, "No hay suficiente stock disponible.")
-            return redirect('home')
+        cart_item.quantity += 1
+        cart_item.save()
 
-    messages.success(request, "Producto agregado al carrito correctamente.")
     return redirect('cart_detail')
 
 
@@ -247,19 +223,12 @@ def update_cart_item(request, item_id):
     )
 
     if request.method == 'POST':
-        quantity = int(request.POST.get('quantity',0))
+        quantity = int(request.POST.get('quantity'))
 
-    if quantity > item.product.stock:
-        messages.error(request, "No hay suficiente stock disponible.")
-        return redirect('cart_detail')
-    
-    elif quantity > 0:
-        item.quantity = quantity
-        item.save()
-        messages.success(request, "Cantidad actualizada correctamente.")
-
-    else:
-        item.delete()
-        messages.success(request, "Producto eliminado del carrito.")
+        if quantity > 0:
+            item.quantity = quantity
+            item.save()
+        else:
+            item.delete()
 
     return redirect('cart_detail')

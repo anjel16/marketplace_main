@@ -96,9 +96,6 @@ class CartItem(models.Model):
     class Meta:
         unique_together = ('cart', 'product')
 
-    def __str__(self):
-        return f"{self.product} x {self.quantity}"
-    
     # Actualizar
     @property
     def subtotal(self):
